@@ -115,7 +115,6 @@ h1 { font-size: 1.6rem; margin: 0; }
 
 .card-body { padding: 10px 12px; }
 
-/* --- FIX: título ahora con color y contraste explícitos --- */
 .card-body h3 {
     font-size: 0.95rem;
     margin: 0 0 4px;
@@ -135,17 +134,36 @@ h1 { font-size: 1.6rem; margin: 0; }
 }
 .episodios { font-size: 0.75rem; color: #999; margin: 0 0 8px; }
 
+/* --- Checkbox "Vista" para peliculas: ahora estilo pill, igual de vistoso que el de episodios --- */
 .visto-check {
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
     font-size: 0.8rem;
     margin-bottom: 8px;
     cursor: pointer;
-    color: #ddd;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #2b2c36;
+    border: 1px solid #3a3b45;
+    color: #ccc;
+    width: 100%;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.visto-check input {
+    accent-color: #e63946;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+.visto-check:has(input:checked) {
+    background: #e63946;
+    border-color: #e63946;
+    color: white;
 }
 
-/* --- Checklist de episodios --- */
+/* --- Checklist de episodios (series) --- */
 .episodios-grid {
     display: flex;
     flex-wrap: wrap;
@@ -167,6 +185,7 @@ h1 { font-size: 1.6rem; margin: 0; }
     color: #ccc;
     cursor: pointer;
     position: relative;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .ep-check input {
     position: absolute;
@@ -182,16 +201,18 @@ h1 { font-size: 1.6rem; margin: 0; }
 .card-actions {
     display: flex;
     gap: 6px;
+    margin-top: 4px;
 }
 .btn-edit {
     background: transparent;
     color: #4ea8de;
     border: 1px solid #4ea8de;
     border-radius: 6px;
-    padding: 4px 8px;
+    padding: 6px 8px;
     font-size: 0.75rem;
     cursor: pointer;
     flex: 1;
+    transition: background 0.2s ease;
 }
 .btn-edit:hover { background: #4ea8de22; }
 
@@ -200,10 +221,11 @@ h1 { font-size: 1.6rem; margin: 0; }
     color: #e63946;
     border: 1px solid #e63946;
     border-radius: 6px;
-    padding: 4px 8px;
+    padding: 6px 8px;
     font-size: 0.75rem;
     cursor: pointer;
     flex: 1;
+    transition: background 0.2s ease;
 }
 .btn-delete:hover { background: #e6394622; }
 
@@ -218,8 +240,7 @@ h1 { font-size: 1.6rem; margin: 0; }
 }
 .form-agregar label { font-size: 0.85rem; color: #ccc; margin-top: 10px; }
 .form-agregar input[type="text"],
-.form-agregar input[type="number"],
-.form-agregar input {
+.form-agregar input[type="number"] {
     background: #2b2c36;
     border: 1px solid #3a3b45;
     color: white;
@@ -227,12 +248,61 @@ h1 { font-size: 1.6rem; margin: 0; }
     border-radius: 6px;
     font-size: 0.9rem;
 }
+
+/* --- Selector de Tipo (Serie/Pelicula) en Agregar: estilo pill en vez de radios sueltos --- */
 .tipo-selector {
     display: flex;
-    gap: 20px;
+    gap: 10px;
     font-size: 0.9rem;
+    margin-top: 6px;
 }
-.tipo-selector label { display: flex; align-items: center; gap: 6px; margin: 0; }
+.tipo-selector label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0;
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background: #2b2c36;
+    border: 1px solid #3a3b45;
+    color: #ccc;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.tipo-selector input[type="radio"] {
+    accent-color: #e63946;
+}
+.tipo-selector label:has(input:checked) {
+    background: #e63946;
+    border-color: #e63946;
+    color: white;
+}
+
+.rango-episodios {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.rango-episodios input {
+    background: #2b2c36;
+    border: 1px solid #3a3b45;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 100%;
+}
+.rango-separador {
+    color: #888;
+    font-size: 1.1rem;
+}
+.rango-error {
+    color: #e63946;
+    font-size: 0.75rem;
+    margin: 4px 0 0;
+}
 
 .preview {
     height: 160px;
