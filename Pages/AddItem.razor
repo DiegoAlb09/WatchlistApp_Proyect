@@ -1,0 +1,20 @@
+@page "/agregar"
+@inject LocalStorageService Storage
+@inject NavigationManager Nav
+
+<div class="header">
+  <h1>Agregar a la Watchlist</h1>
+</div>
+
+<EditForm>
+  <label>Título</label>
+  <label>Portada</label>
+  <label>Tipo</label>
+  <div class="tipo-selector">
+    <label>
+      <input type="radio" name="tipo" value="Serie" /> Serie
+      <input type="radio" name="tipo" value="Película" /> Película
+    </label>
+  </div>
+
+</EditForm>
