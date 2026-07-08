@@ -1,8 +1,28 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+@inject IJSRuntime JS
+
+<div class="topbar">
+    <button class="theme-toggle" @onclick="ToggleTheme">
+        @(esOscuro ? "☀️" : "🌙")
+    </button>
 </div>
+
+<div class="page">
+    <main>@Body</main>
+</div>
+
+@code {
+    private bool esOscuro = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var actual = await JS.InvokeAsync<string>("themeInterop.get");
+        esOscuro = actual != "light";
+    }
+
+    private async Task ToggleTheme()
+    {
+        esOscuro = !esOscuro;
+        await JS.InvokeVoidAsync("themeInterop.set", esOscuro ? "dark" : "light");
+    }
+}
