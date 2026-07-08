@@ -7,5 +7,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<WatchlistApp_Proyect.Services.LocalStorageService>();
+builder.Services.AddScoped<WatchlistApp_Proyect.Services.LibraryStorageService>();
 
 await builder.Build().RunAsync();

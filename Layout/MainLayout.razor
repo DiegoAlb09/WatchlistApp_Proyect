@@ -2,6 +2,10 @@
 @inject IJSRuntime JS
 
 <div class="topbar">
+    <nav class="navbar">
+        <NavLink href="/" Match="NavLinkMatch.All"> Series y Películas</NavLink>
+        <NavLink href="/libros">Libros, Manga y Cómics</NavLink>
+    </nav>
     <button class="theme-toggle" @onclick="ToggleTheme">
         @(esOscuro ? "☀️" : "🌙")
     </button>
