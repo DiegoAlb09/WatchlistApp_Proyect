@@ -1,6 +1,6 @@
-# 🎬 Mi Watchlist
+# 🎬📚 Mi Watchlist
 
-Aplicación web para llevar el control de series y películas pendientes por ver. Permite agregar títulos, clasificarlos como serie o película, llevar un rango de capítulos pendientes (útil para series muy largas) y ver el progreso general de tu lista.
+Aplicación web para llevar el control de series, películas, libros, manga y cómics pendientes por ver/leer. Permite agregar títulos, clasificarlos, llevar un rango o avance de capítulos, y ver el progreso general de tu lista — todo con modo oscuro/claro.
 
 Corre 100% en el navegador — no necesita servidor ni base de datos externa. Todos los datos se guardan localmente en el `localStorage` del navegador.
 
@@ -8,21 +8,27 @@ Corre 100% en el navegador — no necesita servidor ni base de datos externa. To
 
 ## ✨ Funcionalidades actuales
 
-- **Pantalla de inicio**
-  - Barra de progreso general, ponderada por capítulos vistos y películas vistas (no solo por ítems completos).
-  - Filtros: Todo / Solo series / Solo películas.
-  - Tarjetas con portada, título, tipo de contenido y estado de avance.
-- **Agregar / Editar**
-  - Título, portada (URL de imagen), tipo (serie/película).
-  - Para series: rango de capítulos pendientes (ej. del 1169 al 1170), en vez de listar todos los capítulos desde el 1 — ideal para series muy largas.
-  - Validación de que el rango sea válido.
-- **Checklist de capítulos**
-  - Cada capítulo del rango se marca individualmente como visto.
-  - Para películas, un checkbox simple de "Vista".
-- **Eliminar**
-  - Con confirmación antes de borrar, para evitar borrados accidentales.
-- **Persistencia**
-  - Todo se guarda en `localStorage` vía JS interop — no se pierde al recargar la página, pero **es exclusivo del navegador/dispositivo donde lo usas**.
+### Navegación
+- Navbar superior para cambiar entre la sección **Series/Películas** y **Libros/Manga/Cómics**, cada una con su propio diseño.
+- Botón de **modo oscuro/claro** (☀️/🌙), con la preferencia guardada en `localStorage`.
+
+### 🎬 Series y Películas
+- Barra de progreso general, ponderada por capítulos vistos y películas vistas (no solo por ítems completos).
+- Filtros: Todo / Solo series / Solo películas.
+- Toggle **"Compactar completos"**: oculta las series/películas ya terminadas de la grilla principal y las muestra como una lista compacta de solo título, para no saturar la vista.
+- Agregar/Editar: título, portada (URL), tipo, y para series un **rango de capítulos** pendientes (ej. del 1169 al 1170) en vez de listar todo desde el capítulo 1 — ideal para series muy largas.
+- Checklist de capítulos dentro del rango definido; para películas, checkbox simple de "Vista".
+- Eliminar con confirmación previa.
+
+### 📚 Libros, Manga y Cómics
+- Diseño de **lista** (distinto al de Series), con portada tipo lomo de libro.
+- Seguimiento por **stepper** (−/+) del capítulo/tomo actual, en vez de checklist — pensado para lecturas donde vas avanzando de forma continua.
+- Barra de progreso individual por título (si defines una meta de capítulo/tomo).
+- Filtros por tipo: Libro / Manga / Cómic.
+- Agregar/Editar y Eliminar con confirmación, igual que en Series.
+
+### Persistencia
+- Todo se guarda en `localStorage` vía JS interop — no se pierde al recargar la página, pero **es exclusivo del navegador/dispositivo donde lo usas**. Series/Películas y Libros/Manga/Cómics se guardan bajo claves separadas.
 
 ---
 
@@ -31,7 +37,7 @@ Corre 100% en el navegador — no necesita servidor ni base de datos externa. To
 - [Blazor WebAssembly](https://learn.microsoft.com/aspnet/core/blazor/) (.NET 8)
 - C# + Razor Components
 - `localStorage` del navegador para persistencia (sin backend)
-- CSS puro (sin frameworks externos)
+- CSS puro con variables (sin frameworks externos) — permite el modo oscuro/claro
 
 ---
 
@@ -53,14 +59,21 @@ Abre en el navegador la URL que muestre la terminal (ej. `http://localhost:5231`
 ```
 WatchlistApp/
 ├── Models/
-│   └── WatchlistItem.cs        # Modelo de datos (serie/pelicula, rango de capitulos, etc.)
+│   ├── WatchlistItem.cs         # Serie/pelicula: rango de capitulos, checklist, etc.
+│   └── LibroItem.cs             # Libro/manga/comic: capitulo actual, meta, etc.
 ├── Services/
-│   └── LocalStorageService.cs  # Guarda/lee la watchlist en localStorage
+│   ├── LocalStorageService.cs   # Guarda/lee Series y Peliculas (clave "watchlist-items")
+│   └── LibraryStorageService.cs # Guarda/lee Libros/Manga/Comics (clave "library-items")
 ├── Pages/
-│   ├── Home.razor              # Pantalla de inicio (lista, progreso, filtros)
-│   └── AddItem.razor           # Pantalla de agregar/editar
+│   ├── Home.razor               # Inicio: Series y Peliculas
+│   ├── AddItem.razor            # Agregar/editar Serie o Pelicula
+│   ├── Libros.razor             # Inicio: Libros, Manga y Comics
+│   └── AgregarLibro.razor       # Agregar/editar Libro, Manga o Comic
+├── Shared/
+│   └── MainLayout.razor         # Navbar + boton de tema oscuro/claro
 ├── wwwroot/
-│   └── css/app.css
+│   ├── css/app.css              # Estilos con variables de tema
+│   └── js/theme.js              # JS interop para el tema oscuro/claro
 └── Program.cs
 ```
 
@@ -70,8 +83,8 @@ WatchlistApp/
 
 ### Corto plazo
 - [ ] Subir portada como archivo local (base64) en vez de solo URL.
-- [ ] Barra de progreso individual por serie (no solo la general).
 - [ ] Ordenar/buscar dentro de la lista.
+- [ ] Recordar el filtro activo y el estado de "compactar completos" entre sesiones.
 
 ### Publicar la página (acceso público)
 Actualmente el proyecto solo corre en `localhost`. Para que otras personas puedan usarlo desde internet:
@@ -90,11 +103,11 @@ Hoy la watchlist vive solo en el `localStorage` de un navegador — si abres la 
 - [ ] Esto implica pasar de una app 100% estática a una con backend — ya no bastaría con GitHub Pages, se necesitaría un hosting que soporte el servidor (Azure App Service, Render, Railway, etc.).
 
 ### Otras ideas a futuro
-- [ ] Modo oscuro/claro (actualmente solo hay tema oscuro).
-- [ ] Estadísticas (ej. cuántas series completaste este mes).
+- [ ] Estadísticas (ej. cuántas series/libros completaste este mes).
 - [ ] Notas personales por título (ej. "dejé de ver en el capítulo X porque...").
+- [ ] Exportar/importar la watchlist como archivo JSON (respaldo manual mientras no haya cuentas).
 
 ---
 
 ## 👤 Autor
-Diego Alberto Aranda Gonzalez — proyecto personal, Ingeniería en Computación Inteligente.
+Diego Alberto Aranda Gonzalez — Proyecto Personal, Ingeniería en Computación Inteligente.
