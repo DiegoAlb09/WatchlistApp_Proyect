@@ -4,7 +4,7 @@
 @inject IJSRuntime JS
 
 <div class="header">
-    <h1>Mi Watchlist</h1>
+    <h1><Icon Name="film" /> Mi Watchlist</h1>
     <button class="btn-add" @onclick="IrAAgregar">+ Agregar Serie/Película</button>
 </div>
 
@@ -54,7 +54,7 @@ else
                         <div class="cover" style="background-image:url('@item.PortadaUrl')">
                             @if (string.IsNullOrWhiteSpace(item.PortadaUrl))
                             {
-                                <span class="no-cover">🎞️</span>
+                                <Icon Name="photo" />
                             }
                         </div>
                         <div class="card-body">
@@ -84,13 +84,13 @@ else
                             {
                                 <label class="visto-check">
                                     <input type="checkbox" checked="@item.Visto" @onchange="e => MarcarVisto(item, (bool)e.Value!)" />
-                                    Vista
+                                    <span>Vista</span>
                                 </label>
                             }
 
                             <div class="card-actions">
-                                <button class="btn-edit" @onclick="() => Editar(item.Id)">Editar</button>
-                                <button class="btn-delete" @onclick="() => Eliminar(item.Id, item.Titulo)">Eliminar</button>
+                                <button class="btn-edit" @onclick="() => Editar(item.Id)"><Icon Name="pencil" /><span>Editar</span></button>
+                                <button class="btn-delete" @onclick="() => Eliminar(item.Id, item.Titulo)"><Icon Name="trash" /><span>Eliminar</span></button>
                             </div>
                         </div>
                     </div>
@@ -100,15 +100,15 @@ else
 
         @if (compactarCompletados && Completados.Any())
         {
-            <h2 class="seccion-completados">✔ Completados</h2>
+            <h2 class="seccion-completados"><Icon Name="check" /> Completados</h2>
             <div class="completados-compactos">
                 @foreach (var item in Completados)
                 {
                     <div class="card-compacto">
-                        <span class="check-ok">✔</span>
+                        <span class="check-ok"><Icon Name="check" /></span>
                         <span class="titulo-compacto">@item.Titulo</span>
-                        <button class="btn-edit-mini" title="Editar" @onclick="() => Editar(item.Id)">✏️</button>
-                        <button class="btn-delete-mini" title="Eliminar" @onclick="() => Eliminar(item.Id, item.Titulo)">🗑️</button>
+                        <button class="btn-icon-mini editar" title="Editar" @onclick="() => Editar(item.Id)"><Icon Name="pencil" /></button>
+                        <button class="btn-icon-mini eliminar" title="Eliminar" @onclick="() => Eliminar(item.Id, item.Titulo)"><Icon Name="trash" /></button>
                     </div>
                 }
             </div>
@@ -126,14 +126,12 @@ else
         : filtro is null ? items
         : items.Where(i => i.Tipo == filtro);
 
-    // Si el toggle esta activo, los completados salen de la grilla y se muestran compactos aparte
     private IEnumerable<WatchlistItem> Pendientes =>
         ItemsFiltrados.Where(i => !(compactarCompletados && i.EstaCompleta));
 
     private IEnumerable<WatchlistItem> Completados =>
         compactarCompletados ? ItemsFiltrados.Where(i => i.EstaCompleta) : Enumerable.Empty<WatchlistItem>();
 
-    // Progreso ponderado: 1 unidad por pelicula, N unidades (capitulos del rango) por serie
     private int totalUnidades => items?.Sum(i => i.TotalUnidades) ?? 0;
     private int unidadesVistas => items?.Sum(i => i.UnidadesVistas) ?? 0;
     private int pendientes => totalUnidades - unidadesVistas;

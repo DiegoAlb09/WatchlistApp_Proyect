@@ -5,7 +5,7 @@
 
 <div class="libros-theme">
     <div class="header">
-        <h1>Libros, Manga y Cómics</h1>
+        <h1><Icon Name="book" />Libros, Manga y Cómics</h1>
         <button class="btn-add" @onclick="IrAAgregar">+ Agregar</button>
     </div>
 
@@ -35,7 +35,7 @@
                         <div class="libro-cover" style="background-image:url('@libro.PortadaUrl')">
                             @if (string.IsNullOrWhiteSpace(libro.PortadaUrl))
                             {
-                                <span class="no-cover">📖</span>
+                                <span class="no-cover"><Icon Name="photo" /></span>
                             }
                         </div>
                         <div class="libro-info">
@@ -43,12 +43,12 @@
                             <p class="tipo-tag">@libro.Tipo</p>
 
                             <div class="stepper">
-                                <button @onclick="() => CambiarCapitulo(libro, -1)">−</button>
+                                <button @onclick="() => CambiarCapitulo(libro, -1)"><Icon Name="minus" /></button>
                                 <span>
                                     Cap. @libro.CapituloActual
                                     @(libro.CapituloFin is not null ? $" / {libro.CapituloFin}" : "")
                                 </span>
-                                <button @onclick="() => CambiarCapitulo(libro, 1)">+</button>
+                                <button @onclick="() => CambiarCapitulo(libro, 1)"><Icon Name="plus" /></button>
                             </div>
 
                             @if (libro.Porcentaje is not null)
@@ -59,8 +59,8 @@
                             }
                         </div>
                         <div class="libro-actions">
-                            <button class="btn-edit" @onclick="() => Editar(libro.Id)">Editar</button>
-                            <button class="btn-delete" @onclick="() => Eliminar(libro.Id, libro.Titulo)">Eliminar</button>
+                            <button class="btn-edit" @onclick="() => Editar(libro.Id)"><Icon Name="pencil" />Editar</button>
+                            <button class="btn-delete" @onclick="() => Eliminar(libro.Id, libro.Titulo)"><Icon Name="trash" />Eliminar</button>
                         </div>
                     </div>
                 }

@@ -5,7 +5,7 @@
 
 <div class="libros-theme">
     <div class="header">
-        <h1>@(EsEdicion ? "Editar" : "Agregar") a Libros/Manga/Cómics</h1>
+        <h1><Icon Name="@(EsEdicion ? "pencil" : "book")" /> @(EsEdicion ? "Editar" : "Agregar") a Libros/Manga/Cómics</h1>
     </div>
 
     <EditForm Model="item" OnValidSubmit="Guardar" class="form-agregar">
@@ -22,27 +22,21 @@
             <div class="preview" style="background-image:url('@item.PortadaUrl')"></div>
         }
 
-        <label>Autor</label>
-        <InputText @bind-Value="item.Autor" placeholder="Ej. Eiichiro Oda" />
-
-        <label>Género</label>
-        <InputText @bind-Value="item.Genero" placeholder="Ej. Acción, Aventura" />
-
         <label>Tipo</label>
         <div class="tipo-selector">
             <label>
                 <input type="radio" name="tipoLibro" checked="@(item.Tipo == TipoLibro.Libro)"
-                       @onchange="() => item.Tipo = TipoLibro.Libro" />
+                    @onchange="() => item.Tipo = TipoLibro.Libro" />
                 Libro
             </label>
             <label>
                 <input type="radio" name="tipoLibro" checked="@(item.Tipo == TipoLibro.Manga)"
-                       @onchange="() => item.Tipo = TipoLibro.Manga" />
+                    @onchange="() => item.Tipo = TipoLibro.Manga" />
                 Manga
             </label>
             <label>
                 <input type="radio" name="tipoLibro" checked="@(item.Tipo == TipoLibro.Comic)"
-                       @onchange="() => item.Tipo = TipoLibro.Comic" />
+                    @onchange="() => item.Tipo = TipoLibro.Comic" />
                 Cómic
             </label>
         </div>
