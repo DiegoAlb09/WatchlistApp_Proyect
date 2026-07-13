@@ -2,31 +2,38 @@
 @inject IJSRuntime JS
 
 <div class="topbar">
-    <nav class="navbar">
-        <NavLink href="/" Match="NavLinkMatch.All"><Icon Name="film"></Icon> Series y Películas</NavLink>
-        <NavLink href="/libros"><Icon Name="book"></Icon>Libros, Manga y Cómics</NavLink>
-    </nav>
-    <button class="theme-toggle" title="Cambiar tema" @onclick="ToggleTheme">
-       <Icon Name= "@(esOscuro ? "sun" : "moon")" />
-    </button>
+  <nav class="navbar">
+    <NavLink href="/" Match="NavLinkMatch.All">
+      <Icon Name="film"></Icon><span>Series y Películas</span>
+    </NavLink>
+    <NavLink href="/libros">
+      <Icon Name="book"></Icon><span>Libros, Manga y Cómics</span>
+    </NavLink>
+    <NavLink href="/estadisticas">
+      <Icon Name="chart"></Icon><span>Estadísticas</span>
+    </NavLink>
+  </nav>
+  <button class="theme-toggle" title="Cambiar tema" @onclick="ToggleTheme">
+    <Icon Name="@(esOscuro ? "sun" : "moon")" />
+  </button>
 </div>
 
 <div class="page">
-    <main>@Body</main>
+  <main>@Body</main>
 </div>
 
 @code {
-    private bool esOscuro = true;
+  private bool esOscuro = true;
 
-    protected override async Task OnInitializedAsync()
-    {
-        var actual = await JS.InvokeAsync<string>("themeInterop.get");
-        esOscuro = actual != "light";
-    }
+  protected override async Task OnInitializedAsync()
+  {
+    var actual = await JS.InvokeAsync<string>("themeInterop.get");
+    esOscuro = actual != "light";
+  }
 
-    private async Task ToggleTheme()
-    {
-        esOscuro = !esOscuro;
-        await JS.InvokeVoidAsync("themeInterop.set", esOscuro ? "dark" : "light");
-    }
+  private async Task ToggleTheme()
+  {
+    esOscuro = !esOscuro;
+    await JS.InvokeVoidAsync("themeInterop.set", esOscuro ? "dark" : "light");
+  }
 }
