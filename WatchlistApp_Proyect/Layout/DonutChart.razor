@@ -1,0 +1,35 @@
+<div class="donut-wrap" style="width:@(Size)px; height:@(Size)px;">
+  <svg viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="42" class="donut-bg" />
+    <circle cx="50" cy="50" r="42" class="donut-fill"
+      style="stroke:@Color; stroke-dasharray:@Dasharray;"
+      transform="rotate(-90 50 50)" />
+  </svg>
+  <div class="donut-center">
+    <span class="donut-percent">@(Math.Round(Porcentaje))%</span>
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+      <span class="donut-label">@Label</span>
+    }
+  </div>
+</div>
+
+@code {
+  [Parameter] public double Porcentaje { get; set; }
+  [Parameter] public string Label { get; set; } = "";
+  [Parameter] public string Color { get; set; } = "var(--accent)";
+  [Parameter] public int Size { get; set; } = 130;
+
+  private const double Circunferencia = 2 * Math.PI * 42; 
+
+  private string Dasharray
+  {
+    get
+    {
+      var relleno = Circunferencia * Math.Clamp(Porcentaje, 0, 100) / 100.0;
+      var vacio = Circunferencia - relleno;
+      return string.Create(System.Globalization.CultureInfo.InvariantCulture, 
+      $"{relleno:0.##} {vacio:0.##}");
+    }
+  }
+}
