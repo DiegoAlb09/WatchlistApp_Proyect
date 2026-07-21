@@ -10,7 +10,7 @@ namespace WatchlistApi.Controllers;
 public class HistorialController : ControllerBase
 {
   private readonly AppDbContext _db;
-  
+
   public HistorialController(AppDbContext db)
   {
     _db = db;
@@ -28,10 +28,12 @@ public class HistorialController : ControllerBase
   {
     if (item.Id == Guid.Empty)
       item.Id = Guid.NewGuid();
-    
+
     if (item.Fecha == default)
       item.Fecha = DateTime.UtcNow;
-    
+
+    _db.HistorialVistos.Add(item);
+    await _db.SaveChangesAsync();
     return Ok(item);
   }
 }
