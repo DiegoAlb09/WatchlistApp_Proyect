@@ -16,7 +16,9 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 .btn-random:hover {
   border-color: var(--accent);
@@ -113,8 +115,9 @@
   color: var(--text);
 }
 
+/* Variante ancha + encabezado con boton de cerrar (calendario) */
 .modal-card-lg {
-  max-width: 480px;
+  max-width: 520px;
 }
 .modal-header-row {
   display: flex;
@@ -126,7 +129,7 @@
 .modal-header-row h3 {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   color: var(--text);
   font-size: 1.1rem;

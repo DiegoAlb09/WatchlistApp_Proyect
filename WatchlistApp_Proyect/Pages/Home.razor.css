@@ -1,3 +1,4 @@
+/* ===== Tarjetas de series/peliculas ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -194,7 +195,30 @@
   color: white;
 }
 
-/* ===== Calendario de estrenos (dentro del modal) ===== */
+/* ===== Calendario de estrenos: pestanas Semana/Mes ===== */
+.calendario-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--space-md);
+  width: 100%;
+}
+.calendario-tabs button {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.calendario-tabs button.tab-activo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* ===== Calendario: vista semanal (lista) ===== */
 .calendario-lista {
   display: flex;
   flex-direction: column;
@@ -244,4 +268,104 @@
   padding: 4px 10px;
   font-size: 0.8rem;
   color: var(--text);
+}
+
+/* ===== Calendario: vista mensual (grid) ===== */
+.mes-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--space-sm);
+}
+.mes-nav button {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.mes-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.mes-dias-header {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  margin-bottom: 4px;
+}
+.mes-dias-header span {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mes-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+  max-height: 55vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.mes-celda {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px;
+  min-height: 52px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mes-celda.mes-fuera {
+  opacity: 0.35;
+}
+.mes-celda.mes-hoy {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--input-bg));
+}
+.mes-numero {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.mes-hoy .mes-numero {
+  color: var(--accent);
+  font-weight: 700;
+}
+.mes-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.mes-chip {
+  font-size: 0.55rem;
+  background: var(--accent);
+  color: white;
+  border-radius: 3px;
+  padding: 1px 3px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mes-chip-mas {
+  font-size: 0.55rem;
+  color: var(--muted);
 }

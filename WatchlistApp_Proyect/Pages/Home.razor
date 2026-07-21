@@ -191,7 +191,7 @@ else
   </div>
 }
 
-@* ===== Modal: Calendario de estrenos ===== *@
+@* ===== Modal: Calendario de estrenos (Semana / Mes) ===== *@
 @if (mostrarCalendario)
 {
   <div class="modal-overlay" @onclick="() => mostrarCalendario = false">
@@ -212,29 +212,77 @@ else
       }
       else
       {
-        <div class="calendario-lista">
-          @foreach (var (dia, nombre) in DiasEmision.Todos)
-          {
-            var seriesDelDia = SeriesEnEmision.Where(s => s.DiaEmision == dia).ToList();
-            var esHoy = dia == DateTime.Now.DayOfWeek;
-            <div class="calendario-dia @(esHoy ? "calendario-hoy" : "")">
-              <span class="calendario-dia-nombre">@nombre @(esHoy ? "· Hoy" : "")</span>
-              @if (seriesDelDia.Count == 0)
-              {
-                <span class="calendario-vacio">—</span>
-              }
-              else
-              {
-                <div class="calendario-chips">
-                  @foreach (var s in seriesDelDia)
-                  {
-                    <span class="calendario-chip">@s.Titulo</span>
-                  }
-                </div>
-              }
-            </div>
-          }
+        <div class="calendario-tabs">
+          <button class="@(!vistaMensual ? "tab-activo" : "")" @onclick="() => vistaMensual = false">Semana</button>
+          <button class="@(vistaMensual ? "tab-activo" : "")" @onclick="() => vistaMensual = true">Mes</button>
         </div>
+
+        @if (!vistaMensual)
+        {
+          <div class="calendario-lista">
+            @foreach (var (dia, nombre) in DiasEmision.Todos)
+            {
+              var seriesDelDia = SeriesEnEmision.Where(s => s.DiaEmision == dia).ToList();
+              var esHoy = dia == DateTime.Now.DayOfWeek;
+              <div class="calendario-dia @(esHoy ? "calendario-hoy" : "")">
+                <span class="calendario-dia-nombre">@nombre @(esHoy ? "· Hoy" : "")</span>
+                @if (seriesDelDia.Count == 0)
+                {
+                  <span class="calendario-vacio">—</span>
+                }
+                else
+                {
+                  <div class="calendario-chips">
+                    @foreach (var s in seriesDelDia)
+                    {
+                      <span class="calendario-chip">@s.Titulo</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+        else
+        {
+          <div class="mes-nav">
+            <button @onclick="MesAnterior" title="Mes anterior">‹</button>
+            <span class="mes-nombre">@NombreMesMostrado</span>
+            <button @onclick="MesSiguiente" title="Mes siguiente">›</button>
+          </div>
+
+          <div class="mes-dias-header">
+            @foreach (var (dia, nombre) in DiasEmision.Todos)
+            {
+              <span>@nombre.Substring(0, 3)</span>
+            }
+          </div>
+
+          <div class="mes-grid">
+            @foreach (var dia in DiasDelGrid())
+            {
+              var seriesDelDia = SeriesEnEmision.Where(s => s.DiaEmision == dia.DayOfWeek).ToList();
+              var esHoy = dia.Date == DateTime.Now.Date;
+              var esMesActual = dia.Month == mesMostrado.Month;
+              <div class="mes-celda @(esHoy ? "mes-hoy" : "") @(!esMesActual ? "mes-fuera" : "")">
+                <span class="mes-numero">@dia.Day</span>
+                @if (seriesDelDia.Count > 0)
+                {
+                  <div class="mes-chips">
+                    @foreach (var s in seriesDelDia.Take(2))
+                    {
+                      <span class="mes-chip" title="@s.Titulo">@s.Titulo</span>
+                    }
+                    @if (seriesDelDia.Count > 2)
+                    {
+                      <span class="mes-chip-mas">+@(seriesDelDia.Count - 2)</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
       }
     </div>
   </div>
@@ -242,6 +290,12 @@ else
 
 @code {
   private const string PrefsKey = "watchlist-ui-prefs";
+
+  private static readonly string[] NombresMeses =
+  {
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    };
 
   private List<WatchlistItem>? items;
   private TipoContenido? filtro = null;
@@ -256,6 +310,10 @@ else
 
   // ===== Modal calendario =====
   private bool mostrarCalendario = false;
+  private bool vistaMensual = false;
+  private DateTime mesMostrado = new(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+  private string NombreMesMostrado => $"{NombresMeses[mesMostrado.Month - 1]} {mesMostrado.Year}";
 
   private IEnumerable<WatchlistItem> SeriesEnEmision =>
       (items ?? new()).Where(i => i.Tipo == TipoContenido.Serie && i.EnEmision && i.DiaEmision is not null);
@@ -389,7 +447,6 @@ else
     item.Visto = valor;
     await Storage.UpdateAsync(item);
 
-    // Solo se registra en el historial cuando SE MARCA como vista, nunca al desmarcarla.
     if (valor)
       await Historial.RegistrarAsync(item.Id, item.Titulo);
   }
@@ -407,7 +464,6 @@ else
     }
     await Storage.UpdateAsync(item);
 
-    // Solo se registra en el historial cuando SE MARCA el episodio, nunca al desmarcarlo.
     if (marcado)
       await Historial.RegistrarAsync(item.Id, item.Titulo);
   }
@@ -447,4 +503,25 @@ else
   }
 
   private void CerrarModal() => sorpresa = null;
+
+  // ===== Calendario: vista mensual =====
+  private void MesAnterior() => mesMostrado = mesMostrado.AddMonths(-1);
+
+  private void MesSiguiente() => mesMostrado = mesMostrado.AddMonths(1);
+
+  // Genera 42 dias (6 semanas x 7 dias, Lunes a Domingo) empezando en el
+  // lunes de la semana que contiene el dia 1 del mes mostrado - suficiente
+  // para cubrir cualquier mes, incluyendo dias "de relleno" del mes
+  // anterior/siguiente para completar semanas.
+  private List<DateTime> DiasDelGrid()
+  {
+    var offsetLunes = ((int)mesMostrado.DayOfWeek + 6) % 7; // Domingo=0 -> 6, Lunes=1 -> 0, etc.
+    var inicioGrid = mesMostrado.AddDays(-offsetLunes);
+
+    var dias = new List<DateTime>();
+    for (int i = 0; i < 42; i++)
+      dias.Add(inicioGrid.AddDays(i));
+
+    return dias;
+  }
 }
